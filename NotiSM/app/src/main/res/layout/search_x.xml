@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/linear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/searchBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="가져오기"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+        <EditText
+            android:id="@+id/searchWord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="러브샷"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/searchList"
+        android:text="text"
+        android:layout_below="@+id/linear"/>
+</RelativeLayout>

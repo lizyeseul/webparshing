@@ -48,50 +48,51 @@ public class MainActivity extends AppCompatActivity {
             @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
-
-
-               new AsyncTask() {
-                    @Override
-                    protected Object doInBackground(Object[] params) {
-                        try {
-                            //doc = Jsoup.connect("http://exo.smtown.com/Board/List/10724").get();
-                            doc = Jsoup.connect("http://exo.smtown.com/Board/List/?kind=1").timeout(30000)
-                                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
-                                    .referrer("http://www.google.com").get();
-                            //doc = Jsoup.connect("http%3A%2F%2Fexo.smtown.com%2FBoard%2FList%2F10724").get();
-                            //doc = Jsoup.connect("http://exo.smtown.com/Main").get();
-                            //doc = Jsoup.connect("http://www.naver.com").get();
-                            contents = doc.select("div");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        String temp = contents.text();
-                        Log.d("logg0","temp: "+temp);
-                        Top10 = "";
-                        Top10 += contents.size() + "\n";
-                        Log.d("logg1","top: "+Top10);
-
-                        for (Element element : contents) {
-                            Log.d("logg2","top: "+Top10);
-                            /*Iterator<Element> iterElem = element.getElementsByTag("td").iterator();
-                            for(String item : items){
-                                Log.d("logg3","top: "+Top10);
-                                Top10 += item+": "+iterElem.next().text() + "\n";
-                            }*/
-                        }
-                        Log.d("logg4","top: "+Top10);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Object o) {
-                        super.onPostExecute(o);
-                        textView.setText(Top10);
-                    }
-
-                }.execute();
+                MyAsyncTask getTime = new MyAsyncTask();
+                getTime.execute();
             }
         });
+    }
+
+    public class MyAsyncTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {try {
+            doc = Jsoup.connect("https://www.genie.co.kr/detail/songInfo?xgnm=82145523").get();
+            contents = doc.select(".info-data > li");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+            String temp = contents.text();
+            Log.d("logg0","temp: "+temp);
+            Top10 = "";
+            Top10 += contents.size() + "\n";
+            Top10 += contents.get(3).text() + "\n";
+            Log.d("logg1","top: "+Top10);
+
+           /* for (Element element : contents) {
+                Log.d("logg2","top: "+Top10);
+                Top10 += element.text() + "\n";
+            }*/
+            Log.d("logg4","top: "+Top10);
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            textView.setText(Top10);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
     }
 }
