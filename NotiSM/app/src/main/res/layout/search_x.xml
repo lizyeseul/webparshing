@@ -23,10 +23,17 @@
             android:text="러브샷"/>
     </LinearLayout>
 
+    <ListView
+        android:id="@+id/searchListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linear"
+        android:text="text" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/searchList"
         android:text="text"
-        android:layout_below="@+id/linear"/>
+        android:layout_below="@+id/searchListView"/>
 </RelativeLayout>
