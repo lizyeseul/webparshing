@@ -1,11 +1,13 @@
 package o1.mobile.notism;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,12 +24,12 @@ import java.util.ArrayList;
 
 public class search_j extends AppCompatActivity {
 
-    TextView searchList;
     ListView searchListView;
     Button searchBtn;
     EditText searchWord;
     ArrayAdapter adapter;
     ArrayList<String> items = new ArrayList<String>();
+    ArrayList<Integer> albumNumberList = new ArrayList<>();
 
     Elements contents;
     Document doc = null;
@@ -40,7 +42,6 @@ public class search_j extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_x);
 
-        searchList = findViewById(R.id.searchList);
         searchBtn = findViewById(R.id.searchBtn);
         searchWord = findViewById(R.id.searchWord);
         searchListView = findViewById(R.id.searchListView);
@@ -59,6 +60,15 @@ public class search_j extends AppCompatActivity {
                 searchThread.execute();
             }
         });
+
+        searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getApplicationContext(), albumInfo_j.class);
+                intent.putExtra("albumNum", albumNumberList.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private void setUrl(){
@@ -73,7 +83,6 @@ public class search_j extends AppCompatActivity {
                 i++;
             }
             url = "https://www.genie.co.kr/search/searchAlbum?query="+ word+"&Coll=";
-            searchList.setText(url);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -98,18 +107,28 @@ public class search_j extends AppCompatActivity {
             items.removeAll(items);
 
             int count=0;
+            String albumName ="";
+            String albumNum ="";
+            albumNumberList.removeAll(albumNumberList);
             for (Element element : contents) {
                 count++;
                 if(count%3 == 1){
                     Log.d("logg2","top: "+Top10);
-                    String albumName = element.text();
-                    String albumNum =element.getElementsByAttribute("onclick").toString();
-                    albumNum = albumNum.substring(albumNum.indexOf("Layer")+7, albumNum.indexOf("Layer")+8+7);
+                    albumName = "앨범 : "+element.text()+ "\n";
+                    albumNum = element.getElementsByAttribute("onclick").toString();
+                    albumNum = albumNum.substring(albumNum.indexOf("Layer")+7, albumNum.indexOf("Layer")+8+7) ;
 
                     Top10 += albumName + "\n";
                     Top10 += albumNum+ "\n";
                     Top10 += "------------" + "\n";
 
+                    albumNumberList.add(Integer.parseInt(albumNum));
+                }
+                else if(count%3 == 2){
+                    albumName += "title : "+ element.text()+ "\n";
+                }
+                else if(count%3 == 0){
+                    albumName += "가수 : "+ element.text();
                     items.add(albumName);
                 }
             }
@@ -126,7 +145,6 @@ public class search_j extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            searchList.setText(Top10);
             adapter.notifyDataSetChanged();
         }
 

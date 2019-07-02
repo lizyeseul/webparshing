@@ -21,6 +21,7 @@
         <activity android:name=".MainActivity">
 
         </activity>
+        <activity android:name=".albumInfo_j"/>
     </application>
 
 </manifest>
