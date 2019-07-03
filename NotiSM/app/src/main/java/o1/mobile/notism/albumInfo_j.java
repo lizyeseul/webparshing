@@ -31,9 +31,10 @@ public class albumInfo_j extends AppCompatActivity {
     Document docTrack = null;
     ArrayList<String> times = new ArrayList<>();
     ArrayAdapter adapter;
-    String url = "https://www.genie.co.kr/detail/albumInfo?axnm=";
+    String albumurl = "https://www.genie.co.kr/detail/albumInfo?axnm=";
     String trackUrlDefault = "https://www.genie.co.kr/detail/songInfo?xgnm=";
     String trackUrl = "https://www.genie.co.kr/detail/songInfo?xgnm=";
+    String state = "album";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +49,23 @@ public class albumInfo_j extends AppCompatActivity {
 
         Intent intent = getIntent();
         if(intent != null){
-            url += intent.getIntExtra("albumNum", 1);
+            state = intent.getStringExtra("state");
         }
 
-        getTrack gettrack = new getTrack();
-        gettrack.execute();
-        adapter.notifyDataSetChanged();
+        if(state.equals("album")){
+            albumurl += intent.getIntExtra("numberList", 1);
+            getTrackTime gettrack = new getTrackTime();
+            gettrack.execute();
+            adapter.notifyDataSetChanged();
+        }
+        else if(state.equals("sing")){
+            trackUrl += intent.getIntExtra("numberList", 1);
+            getSingTime gettrack = new getSingTime();
+            gettrack.execute();
+            adapter.notifyDataSetChanged();
+        }
+
+
 
         button.setOnClickListener(new View.OnClickListener(){
             @SuppressLint("StaticFieldLeak")
@@ -65,11 +77,11 @@ public class albumInfo_j extends AppCompatActivity {
     }
 
 
-    public class getTrack extends AsyncTask<Void, Void, Void> {
+    public class getTrackTime extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                doc = Jsoup.connect(url).get();
+                doc = Jsoup.connect(albumurl).get();
                 contents = doc.select(".list-wrap > tbody > tr");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -82,16 +94,53 @@ public class albumInfo_j extends AppCompatActivity {
                 try {
                     docTrack = Jsoup.connect(trackUrl).get();
                     Log.d("logg-","url: "+trackUrl);
+                    contentTrack = docTrack.select(".info-zone > .name");
+                    String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
                     contentTrack = docTrack.select(".info-data > li");
+                    songInfo += "길이 : "+ contentTrack.get(3).text();
+                    times.add(songInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                times.add(contentTrack.get(3).text());
                 Log.d("logg-","times: "+contentTrack.get(3).text());
             }
 
             return null;
         }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter.notifyDataSetChanged();
+        }
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+    }
+
+    public class getSingTime extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                docTrack = Jsoup.connect(trackUrl).get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            contentTrack = docTrack.select(".info-zone > .name");
+            String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
+            contentTrack = docTrack.select(".info-data > li");
+            songInfo += "길이 : "+ contentTrack.get(3).text();
+
+            times.add(songInfo);
+
+            return null;
+        }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();

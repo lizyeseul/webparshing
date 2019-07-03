@@ -7,19 +7,37 @@
 
     <LinearLayout
         android:id="@+id/linear"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/searchBtn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="가져오기"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:id="@+id/linearSearch"
+            android:gravity="center">
+            <Button
+                android:id="@+id/searchAlbumBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="앨범 검색"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
+            <Button
+                android:id="@+id/searchSingBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="노래 검색"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
+
+        </LinearLayout>
         <EditText
+            android:padding="2dp"
+            android:background="@color/editTextBackground"
             android:id="@+id/searchWord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/linearSearch"
             android:text="러브샷"/>
     </LinearLayout>
 
