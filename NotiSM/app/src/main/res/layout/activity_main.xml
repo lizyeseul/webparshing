@@ -6,17 +6,17 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="가져오기"
-       android:layout_alignParentTop="true"
+        android:text="추가하기"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/text"
-        android:text="text"
-        android:layout_below="@+id/button"/>
+        android:id="@+id/playlist"
+        android:background="@color/colorAccent"
+        android:layout_below="@+id/addBtn"/>
 </RelativeLayout>

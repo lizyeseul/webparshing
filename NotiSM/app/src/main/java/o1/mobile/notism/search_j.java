@@ -187,7 +187,7 @@ public class search_j extends AppCompatActivity {
                 songInfo += "가수 : "+songArtist+ "\n";
 
                 String songAlbum = element.select(".albumtitle").text();
-                songInfo += "가수 : "+songAlbum;
+                songInfo += "앨범 : "+songAlbum;
 
                 songNum = element.getElementsByAttribute("onclick").toString();
                 songNum = songNum.substring(songNum.indexOf("fnPlaySong")+12, songNum.indexOf("fnPlaySong")+12+8) ;

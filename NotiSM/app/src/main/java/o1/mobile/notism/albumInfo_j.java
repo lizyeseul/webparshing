@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,18 +17,19 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class albumInfo_j extends AppCompatActivity {
 
     ListView trackList;
-    Button button;
+    Button back, confirm;
     Elements contents;
     Elements contentTrack;
     Document doc = null;
     Document docTrack = null;
-    ArrayList<String> times = new ArrayList<>();
+
+    ArrayList<String> times = new ArrayList<>(), songs = new ArrayList<>(), songInformation = new ArrayList<>();
     ArrayAdapter adapter;
+
     String albumurl = "https://www.genie.co.kr/detail/albumInfo?axnm=";
     String trackUrlDefault = "https://www.genie.co.kr/detail/songInfo?xgnm=";
     String trackUrl = "https://www.genie.co.kr/detail/songInfo?xgnm=";
@@ -41,10 +40,11 @@ public class albumInfo_j extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.albuminfo_x);
 
-        button = findViewById(R.id.back);
+        back = findViewById(R.id.back);
+        confirm = findViewById(R.id.confirm);
         trackList = findViewById(R.id.trackListView);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,times);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songInformation);
         trackList.setAdapter(adapter);
 
         Intent intent = getIntent();
@@ -54,24 +54,36 @@ public class albumInfo_j extends AppCompatActivity {
 
         if(state.equals("album")){
             albumurl += intent.getIntExtra("numberList", 1);
-            getTrackTime gettrack = new getTrackTime();
-            gettrack.execute();
+            getTrackTime getTime = new getTrackTime();
+            getTime.execute();
             adapter.notifyDataSetChanged();
         }
         else if(state.equals("sing")){
             trackUrl += intent.getIntExtra("numberList", 1);
-            getSingTime gettrack = new getSingTime();
-            gettrack.execute();
+            getSingTime getTime = new getSingTime();
+            getTime.execute();
             adapter.notifyDataSetChanged();
         }
 
 
 
-        button.setOnClickListener(new View.OnClickListener(){
+        back.setOnClickListener(new View.OnClickListener(){
             @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
                 finish();
+            }
+        });
+        confirm.setOnClickListener(new View.OnClickListener(){
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.putExtra("songs", songs);
+                intent.putExtra("times", times);
+                intent.putExtra("songInformation", songInformation);
+                intent.putExtra("first", "second");
+                startActivity(intent);
             }
         });
     }
@@ -94,15 +106,17 @@ public class albumInfo_j extends AppCompatActivity {
                 try {
                     docTrack = Jsoup.connect(trackUrl).get();
                     Log.d("logg-","url: "+trackUrl);
+
                     contentTrack = docTrack.select(".info-zone > .name");
                     String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
+
                     contentTrack = docTrack.select(".info-data > li");
                     songInfo += "길이 : "+ contentTrack.get(3).text();
-                    times.add(songInfo);
+
+                    songInformation.add(songInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                Log.d("logg-","times: "+contentTrack.get(3).text());
             }
 
             return null;
@@ -131,12 +145,14 @@ public class albumInfo_j extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
             contentTrack = docTrack.select(".info-zone > .name");
             String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
+
             contentTrack = docTrack.select(".info-data > li");
             songInfo += "길이 : "+ contentTrack.get(3).text();
 
-            times.add(songInfo);
+            songInformation.add(songInfo);
 
             return null;
         }
