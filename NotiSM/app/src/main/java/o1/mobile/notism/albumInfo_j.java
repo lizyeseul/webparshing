@@ -1,7 +1,10 @@
 package o1.mobile.notism;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +23,14 @@ import java.util.ArrayList;
 
 public class albumInfo_j extends AppCompatActivity {
 
+    playlist_DBHelper dbHelper;
+    SQLiteDatabase db;
+    String sql;
+    Cursor cursor;
+
+    final static String dbName = "Playlist.db";
+    final static int dbVersion = 1;
+
     ListView trackList;
     Button back, confirm;
     Elements contents;
@@ -27,7 +38,7 @@ public class albumInfo_j extends AppCompatActivity {
     Document doc = null;
     Document docTrack = null;
 
-    ArrayList<String> times = new ArrayList<>(), songs = new ArrayList<>(), songInformation = new ArrayList<>();
+    ArrayList<String> songInformation = new ArrayList<>();
     ArrayAdapter adapter;
 
     String albumurl = "https://www.genie.co.kr/detail/albumInfo?axnm=";
@@ -46,6 +57,8 @@ public class albumInfo_j extends AppCompatActivity {
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songInformation);
         trackList.setAdapter(adapter);
+
+        dbHelper = new playlist_DBHelper(this, dbName, null, dbVersion);
 
         Intent intent = getIntent();
         if(intent != null){
@@ -79,15 +92,32 @@ public class albumInfo_j extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra("songs", songs);
-                intent.putExtra("times", times);
-                intent.putExtra("songInformation", songInformation);
+                addPlaylist();
                 intent.putExtra("first", "second");
                 startActivity(intent);
             }
         });
     }
 
+    private void addPlaylist(){
+        for(int i=0; i<songInformation.size(); i++){
+            String temp = songInformation.get(i);
+
+            String name = temp.substring(temp.indexOf("노래 : ")+6, temp.indexOf("길이 : ")-1);
+            String length = temp.substring(temp.indexOf("길이 : ")+6, temp.indexOf("가수 : ")-1);
+            String singer = temp.substring(temp.indexOf("가수 : ")+6, temp.indexOf("앨범 : ")-1);
+            String album = temp.substring(temp.indexOf("앨범 : ")+6);
+
+            db = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            //sName , sLength  , sSinger, sAlbum
+            values.put("sName", name);
+            values.put("sLength", length);
+            values.put("sSinger", singer);
+            values.put("sAlbum", album);
+            db.insert("playlistDB", null, values);
+        }
+    }
 
     public class getTrackTime extends AsyncTask<Void, Void, Void> {
         @Override
@@ -105,13 +135,14 @@ public class albumInfo_j extends AppCompatActivity {
                 trackUrl = trackUrlDefault + songId;
                 try {
                     docTrack = Jsoup.connect(trackUrl).get();
-                    Log.d("logg-","url: "+trackUrl);
 
                     contentTrack = docTrack.select(".info-zone > .name");
                     String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
 
                     contentTrack = docTrack.select(".info-data > li");
-                    songInfo += "길이 : "+ contentTrack.get(3).text();
+                    songInfo += "길이 : "+ contentTrack.get(3).text() +"\n";
+                    songInfo += "가수 : "+ contentTrack.get(0).text() +"\n";
+                    songInfo += "앨범 : "+ contentTrack.get(1).text();
 
                     songInformation.add(songInfo);
                 } catch (Exception e) {
@@ -124,10 +155,13 @@ public class albumInfo_j extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            songInformation.add("Loading...");
+            adapter.notifyDataSetChanged();
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            songInformation.remove("Loading...");
             adapter.notifyDataSetChanged();
         }
         @Override
@@ -151,19 +185,23 @@ public class albumInfo_j extends AppCompatActivity {
 
             contentTrack = docTrack.select(".info-data > li");
             songInfo += "길이 : "+ contentTrack.get(3).text();
+            songInfo += "가수 : "+ contentTrack.get(0).text() +"\n";
+            songInfo += "앨범 : "+ contentTrack.get(1).text();
 
             songInformation.add(songInfo);
 
             return null;
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            songInformation.add("Loading...");
+            adapter.notifyDataSetChanged();
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            songInformation.remove("Loading...");
             adapter.notifyDataSetChanged();
         }
         @Override

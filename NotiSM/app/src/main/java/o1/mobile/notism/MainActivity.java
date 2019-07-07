@@ -1,38 +1,29 @@
 package o1.mobile.notism;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.provider.DocumentsContract;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class MainActivity extends AppCompatActivity {
 
+    playlist_DBHelper dbHelper;
+    SQLiteDatabase db;
+    String sql;
+    Cursor cursor;
+
+    final static String dbName = "Playlist.db";
+    final static int dbVersion = 1;
+
     ListView playlistView;
     Button addBtn;
-    ArrayAdapter adapter;
-    ArrayList<String> playList = new ArrayList<>(), songInformation = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,14 +33,13 @@ public class MainActivity extends AppCompatActivity {
         playlistView = findViewById(R.id.playlist);
         addBtn = findViewById(R.id.addBtn);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,playList);
-        playlistView.setAdapter(adapter);
+        dbHelper = new playlist_DBHelper(this, dbName, null, dbVersion);
+
+        selectDB();
 
         Intent intent = getIntent();
         if(intent.getStringExtra("first") != null){
-            songInformation=(ArrayList<String>)intent.getSerializableExtra("songInformation");
-            Log.d("logg", "non");
-            setPlaylist();
+            //intent 내용 있을 때
         }
 
         addBtn.setOnClickListener(new View.OnClickListener(){
@@ -61,10 +51,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void setPlaylist(){
-        for(int i=0; i<songInformation.size(); i++){
-            playList.add(songInformation.get(i));
+    private void selectDB(){
+        db = dbHelper.getWritableDatabase();
+        sql = "SELECT * FROM playlistDB;";
+
+        cursor = db.rawQuery(sql, null);
+        if(cursor.getCount() > 0){
+            startManagingCursor(cursor);
+            playlist_DBAdapter dbAdapter = new playlist_DBAdapter(this, cursor);
+            playlistView.setAdapter(dbAdapter);
         }
-        adapter.notifyDataSetChanged();
     }
 }
