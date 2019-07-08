@@ -78,10 +78,7 @@ public class albumInfo_j extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
 
-
-
         back.setOnClickListener(new View.OnClickListener(){
-            @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
                 finish();
@@ -91,10 +88,12 @@ public class albumInfo_j extends AppCompatActivity {
             @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                addPlaylist();
-                intent.putExtra("first", "second");
-                startActivity(intent);
+                if(!songInformation.contains("Loading...")){
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    addPlaylist();
+                    intent.putExtra("first", "second");
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -103,10 +102,10 @@ public class albumInfo_j extends AppCompatActivity {
         for(int i=0; i<songInformation.size(); i++){
             String temp = songInformation.get(i);
 
-            String name = temp.substring(temp.indexOf("노래 : ")+6, temp.indexOf("길이 : ")-1);
-            String length = temp.substring(temp.indexOf("길이 : ")+6, temp.indexOf("가수 : ")-1);
-            String singer = temp.substring(temp.indexOf("가수 : ")+6, temp.indexOf("앨범 : ")-1);
-            String album = temp.substring(temp.indexOf("앨범 : ")+6);
+            String name = temp.substring(temp.indexOf("노래 : ")+5, temp.indexOf("길이 : ")-1);
+            String length = temp.substring(temp.indexOf("길이 : ")+5, temp.indexOf("가수 : ")-1);
+            String singer = temp.substring(temp.indexOf("가수 : ")+5, temp.indexOf("앨범 : ")-1);
+            String album = temp.substring(temp.indexOf("앨범 : ")+5);
 
             db = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
@@ -184,7 +183,7 @@ public class albumInfo_j extends AppCompatActivity {
             String songInfo = "노래 : "+ contentTrack.get(0).text() +"\n";
 
             contentTrack = docTrack.select(".info-data > li");
-            songInfo += "길이 : "+ contentTrack.get(3).text();
+            songInfo += "길이 : "+ contentTrack.get(3).text()+"\n";
             songInfo += "가수 : "+ contentTrack.get(0).text() +"\n";
             songInfo += "앨범 : "+ contentTrack.get(1).text();
 

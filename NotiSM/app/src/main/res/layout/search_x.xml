@@ -29,6 +29,13 @@
                 android:text="노래 검색"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"/>
+            <Button
+                android:id="@+id/searchCancelBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="취소"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
 
         </LinearLayout>
         <EditText

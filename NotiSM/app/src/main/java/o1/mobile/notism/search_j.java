@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class search_j extends AppCompatActivity {
 
     ListView searchListView;
-    Button searchAlbumBtn, searchSingBtn;
+    Button searchAlbumBtn, searchSingBtn, searchCancelBtn;
     EditText searchWord;
     ArrayAdapter adapter;
     ArrayList<String> items = new ArrayList<String>();
@@ -44,6 +44,7 @@ public class search_j extends AppCompatActivity {
 
         searchAlbumBtn = findViewById(R.id.searchAlbumBtn);
         searchSingBtn = findViewById(R.id.searchSingBtn);
+        searchCancelBtn = findViewById(R.id.searchCancelBtn);
         searchWord = findViewById(R.id.searchWord);
         searchListView = findViewById(R.id.searchListView);
 
@@ -51,7 +52,6 @@ public class search_j extends AppCompatActivity {
         searchListView.setAdapter(adapter);
 
         searchAlbumBtn.setOnClickListener(new View.OnClickListener(){
-            @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
                 setUrl("album");
@@ -61,7 +61,6 @@ public class search_j extends AppCompatActivity {
             }
         });
         searchSingBtn.setOnClickListener(new View.OnClickListener(){
-            @SuppressLint("StaticFieldLeak")
             @Override
             public void onClick(View v){
                 setUrl("sing");
@@ -70,6 +69,13 @@ public class search_j extends AppCompatActivity {
                 state = "sing";
             }
         });
+        searchCancelBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                finish();
+            }
+        });
+
 
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
