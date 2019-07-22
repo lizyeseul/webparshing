@@ -7,31 +7,31 @@
     android:background="@color/colorAccent">
     <TextView
         android:background="@color/white"
-        android:layout_weight="2"
-        android:layout_width="wrap_content"
+        android:layout_weight="3"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:id="@+id/sNameTV"
         android:text="name"/>
     <TextView
         android:background="@color/white"
         android:layout_weight="1"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:id="@+id/sLengthTV"
-        android:text="name"/>
+        android:text="length"/>
     <TextView
         android:background="@color/white"
-        android:layout_weight="3"
-        android:layout_width="wrap_content"
+        android:layout_weight="2"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:id="@+id/sSingerTV"
-        android:text="name"/>
+        android:text="singer"/>
     <TextView
         android:background="@color/white"
-        android:layout_weight="3"
-        android:layout_width="wrap_content"
+        android:layout_weight="1"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:id="@+id/sAlbumTV"
-        android:text="name"/>
+        android:id="@+id/sPri"
+        android:text="priority"/>
 
 </LinearLayout>

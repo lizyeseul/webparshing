@@ -150,6 +150,8 @@ public class search_j extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            items.add("loading...");
+            adapter.notifyDataSetChanged();
         }
 
         @Override
@@ -208,6 +210,8 @@ public class search_j extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            items.add("loading...");
+            adapter.notifyDataSetChanged();
         }
 
         @Override

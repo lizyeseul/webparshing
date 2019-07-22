@@ -9,10 +9,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -39,7 +44,8 @@ public class albumInfo_j extends AppCompatActivity {
     Document docTrack = null;
 
     ArrayList<String> songInformation = new ArrayList<>();
-    ArrayAdapter adapter;
+    //ArrayAdapter adapter;
+    add_Adapter_j adapter;
 
     String albumurl = "https://www.genie.co.kr/detail/albumInfo?axnm=";
     String trackUrlDefault = "https://www.genie.co.kr/detail/songInfo?xgnm=";
@@ -55,8 +61,11 @@ public class albumInfo_j extends AppCompatActivity {
         confirm = findViewById(R.id.confirm);
         trackList = findViewById(R.id.trackListView);
 
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songInformation);
+
+        //adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songInformation);
+        adapter = new add_Adapter_j();
         trackList.setAdapter(adapter);
+
 
         dbHelper = new playlist_DBHelper(this, dbName, null, dbVersion);
 
@@ -96,6 +105,8 @@ public class albumInfo_j extends AppCompatActivity {
                 }
             }
         });
+
+        setData();
     }
 
     private void addPlaylist(){
@@ -115,6 +126,70 @@ public class albumInfo_j extends AppCompatActivity {
             values.put("sSinger", singer);
             values.put("sAlbum", album);
             db.insert("playlistDB", null, values);
+        }
+    }
+
+    private void setData() {
+        adapter.deleteAll();
+        for (int i = 0; i < songInformation.size(); i++) {
+            CustomDTO dto = new CustomDTO();
+            dto.setSonginfo(songInformation.get(i));
+
+            adapter.addItem(dto);
+        }
+    }
+
+    public class CustomDTO{
+        private String information;
+        public void setSonginfo(String songInfo){
+            this.information = songInfo;
+        }
+        public String getSonginfo(){
+            return information;
+        }
+    }
+
+    public class add_Adapter_j extends BaseAdapter {
+        private ArrayList<CustomDTO> listCustom = new ArrayList<CustomDTO>();
+
+        public  void deleteAll(){
+            listCustom.removeAll(listCustom);
+        }
+        public int getCount(){
+            return listCustom.size();
+        }
+        public Object getItem(int position) {
+            return listCustom.get(position);
+        }
+        public long getItemId(int position){
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent){
+            CustomViewHolder holder;
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_layout_x, null, false);
+
+                holder = new CustomViewHolder();
+                holder.addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (CustomViewHolder) convertView.getTag();
+            }
+
+            CustomDTO dto = listCustom.get(position);
+
+            holder.addInfoTV.setText(dto.getSonginfo());
+
+            return convertView;
+        }
+        class CustomViewHolder {
+            TextView addInfoTV;
+        }
+
+        public void addItem(CustomDTO dto) {
+            listCustom.add(dto);
         }
     }
 
@@ -162,6 +237,7 @@ public class albumInfo_j extends AppCompatActivity {
             super.onPostExecute(aVoid);
             songInformation.remove("Loading...");
             adapter.notifyDataSetChanged();
+            setData();
         }
         @Override
         protected void onProgressUpdate(Void... values) {
@@ -202,6 +278,7 @@ public class albumInfo_j extends AppCompatActivity {
             super.onPostExecute(aVoid);
             songInformation.remove("Loading...");
             adapter.notifyDataSetChanged();
+            setData();
         }
         @Override
         protected void onProgressUpdate(Void... values) {

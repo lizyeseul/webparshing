@@ -12,10 +12,9 @@ public class playlist_DBHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //sName , sLength  , sSinger, sAlbum
-        sql = "CREATE TABLE playlistDB (_id INTEGER PRIMARY KEY AUTOINCREMENT," + " sName TEXT, sLength TEXT, sSinger TEXT, sAlbum TEXT);";
+        //sName , sLength  , sSinger, sAlbum, priority
+        sql = "CREATE TABLE playlistDB (_id INTEGER PRIMARY KEY AUTOINCREMENT," + " sName TEXT, sLength TEXT, sSinger TEXT, sAlbum TEXT, priority INTEGER);";
         db.execSQL(sql);
-        db.execSQL("INSERT INTO playlistDB VALUES(NULL, '럽샷', '04:20','엑소','템포리팩');");
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
