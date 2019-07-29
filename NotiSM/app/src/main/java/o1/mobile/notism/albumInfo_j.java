@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -62,7 +63,6 @@ public class albumInfo_j extends AppCompatActivity {
         trackList = findViewById(R.id.trackListView);
 
 
-        //adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songInformation);
         adapter = new add_Adapter_j();
         trackList.setAdapter(adapter);
 
@@ -106,6 +106,7 @@ public class albumInfo_j extends AppCompatActivity {
             }
         });
 
+
         setData();
     }
 
@@ -134,6 +135,8 @@ public class albumInfo_j extends AppCompatActivity {
         for (int i = 0; i < songInformation.size(); i++) {
             CustomDTO dto = new CustomDTO();
             dto.setSonginfo(songInformation.get(i));
+            dto.setPriority(2);
+            dto.setToggle(true);
 
             adapter.addItem(dto);
         }
@@ -141,11 +144,25 @@ public class albumInfo_j extends AppCompatActivity {
 
     public class CustomDTO{
         private String information;
+        private int priority;
+        private boolean toggle;
         public void setSonginfo(String songInfo){
             this.information = songInfo;
         }
         public String getSonginfo(){
             return information;
+        }
+        public void setPriority(int priority){
+            this.priority = priority;
+        }
+        public int getPriority(){
+            return priority;
+        }
+        public void setToggle(boolean toggle){
+            this.toggle = toggle;
+        }
+        public boolean getToggle(){
+            return toggle;
         }
     }
 
@@ -166,27 +183,40 @@ public class albumInfo_j extends AppCompatActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent){
-            CustomViewHolder holder;
+
+            final TextView addInfoTV;
+            final Button addPriority;
+            final ToggleButton addToggle;
+
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_layout_x, null, false);
-
-                holder = new CustomViewHolder();
-                holder.addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
-
-                convertView.setTag(holder);
-            } else {
-                holder = (CustomViewHolder) convertView.getTag();
             }
 
-            CustomDTO dto = listCustom.get(position);
+            addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
+            addPriority = (Button) convertView.findViewById(R.id.addPriority);
+            addToggle = (ToggleButton) convertView.findViewById(R.id.addToggle);
 
-            holder.addInfoTV.setText(dto.getSonginfo());
+            final CustomDTO dto = listCustom.get(position);
+            addInfoTV.setText(dto.getSonginfo());
+            addPriority.setText(Integer.toString(dto.getPriority()));
+            addToggle.setChecked(dto.getToggle());
+
+            //////////priority 변경
+            addPriority.setOnClickListener(new View.OnClickListener(){
+                public void onClick(View v){
+                    int pri = Integer.parseInt(addPriority.getText().toString());
+                    pri++;
+                    if(pri>3){
+                        pri = 1;
+                    }
+                    dto.setPriority(pri);
+                    notifyDataSetChanged();
+                }
+            });
 
             return convertView;
         }
-        class CustomViewHolder {
-            TextView addInfoTV;
-        }
+
 
         public void addItem(CustomDTO dto) {
             listCustom.add(dto);

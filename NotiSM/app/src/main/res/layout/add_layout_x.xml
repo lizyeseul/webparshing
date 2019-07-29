@@ -21,6 +21,9 @@
         android:background="@color/editTextBackground"
         android:layout_gravity="center"
         android:gravity="center"
+        android:checked="true"
+        android:textOff="삭제"
+        android:textOn="선택"
         android:id="@+id/addToggle"
         android:layout_width="50dp"
         android:layout_height="50dp" />
