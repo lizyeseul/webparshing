@@ -18,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import org.jsoup.Jsoup;
@@ -106,27 +107,32 @@ public class albumInfo_j extends AppCompatActivity {
             }
         });
 
-
         setData();
     }
 
     private void addPlaylist(){
-        for(int i=0; i<songInformation.size(); i++){
-            String temp = songInformation.get(i);
+        for(int i=0; i<adapter.getCount(); i++){
+            CustomDTO dtoTemp = (CustomDTO) adapter.getItem(i);
+            //Toast.makeText(getApplicationContext(),"토글확인 "+dtoTemp.toggle,Toast.LENGTH_SHORT).show();
+            if(dtoTemp.toggle == true){
+                String temp = dtoTemp.getSonginfo();
 
-            String name = temp.substring(temp.indexOf("노래 : ")+5, temp.indexOf("길이 : ")-1);
-            String length = temp.substring(temp.indexOf("길이 : ")+5, temp.indexOf("가수 : ")-1);
-            String singer = temp.substring(temp.indexOf("가수 : ")+5, temp.indexOf("앨범 : ")-1);
-            String album = temp.substring(temp.indexOf("앨범 : ")+5);
+                String name = temp.substring(temp.indexOf("노래 : ")+5, temp.indexOf("길이 : ")-1);
+                String length = temp.substring(temp.indexOf("길이 : ")+5, temp.indexOf("가수 : ")-1);
+                String singer = temp.substring(temp.indexOf("가수 : ")+5, temp.indexOf("앨범 : ")-1);
+                String album = temp.substring(temp.indexOf("앨범 : ")+5);
 
-            db = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
-            //sName , sLength  , sSinger, sAlbum
-            values.put("sName", name);
-            values.put("sLength", length);
-            values.put("sSinger", singer);
-            values.put("sAlbum", album);
-            db.insert("playlistDB", null, values);
+                db = dbHelper.getWritableDatabase();
+                ContentValues values = new ContentValues();
+                //sName , sLength  , sSinger, sAlbum
+                values.put("sName", name);
+                values.put("sLength", length);
+                values.put("sSinger", singer);
+                values.put("sAlbum", album);
+                values.put("priority", Integer.toString(dtoTemp.getPriority()));
+                db.insert("playlistDB", null, values);
+            }
+
         }
     }
 
@@ -135,7 +141,7 @@ public class albumInfo_j extends AppCompatActivity {
         for (int i = 0; i < songInformation.size(); i++) {
             CustomDTO dto = new CustomDTO();
             dto.setSonginfo(songInformation.get(i));
-            dto.setPriority(2);
+            dto.setPriority(1);
             dto.setToggle(true);
 
             adapter.addItem(dto);
@@ -164,6 +170,8 @@ public class albumInfo_j extends AppCompatActivity {
         public boolean getToggle(){
             return toggle;
         }
+
+
     }
 
     public class add_Adapter_j extends BaseAdapter {
@@ -184,27 +192,31 @@ public class albumInfo_j extends AppCompatActivity {
 
         public View getView(int position, View convertView, ViewGroup parent){
 
-            final TextView addInfoTV;
-            final Button addPriority;
-            final ToggleButton addToggle;
-
+            final CustomViewHolder holder;
             if (convertView == null) {
                 convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.add_layout_x, null, false);
+
+                holder = new CustomViewHolder();
+                holder.addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
+
+                convertView.setTag(holder);
+            } else {
+                holder = (CustomViewHolder) convertView.getTag();
             }
 
-            addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
-            addPriority = (Button) convertView.findViewById(R.id.addPriority);
-            addToggle = (ToggleButton) convertView.findViewById(R.id.addToggle);
+            holder.addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
+            holder.addPriority = (Button) convertView.findViewById(R.id.addPriority);
+            holder.addToggle = (ToggleButton) convertView.findViewById(R.id.addToggle);
 
             final CustomDTO dto = listCustom.get(position);
-            addInfoTV.setText(dto.getSonginfo());
-            addPriority.setText(Integer.toString(dto.getPriority()));
-            addToggle.setChecked(dto.getToggle());
+            holder.addInfoTV.setText(dto.getSonginfo());
+            holder.addPriority.setText(Integer.toString(dto.getPriority()));
+            holder.addToggle.setChecked(dto.getToggle());
 
             //////////priority 변경
-            addPriority.setOnClickListener(new View.OnClickListener(){
+            holder.addPriority.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v){
-                    int pri = Integer.parseInt(addPriority.getText().toString());
+                    int pri = Integer.parseInt(holder.addPriority.getText().toString());
                     pri++;
                     if(pri>3){
                         pri = 1;
@@ -214,9 +226,35 @@ public class albumInfo_j extends AppCompatActivity {
                 }
             });
 
+            ////////토글키 반영
+            holder.addToggle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Toast.makeText(getApplicationContext(), "1"+holder.addToggle.isChecked()+" - dto "+dto.getToggle(), Toast.LENGTH_SHORT).show();
+                    if(holder.addToggle.isChecked()){
+                        //Toast.makeText(getApplicationContext(), "2"+holder.addToggle.isChecked(), Toast.LENGTH_SHORT).show();
+                        //holder.addToggle.setChecked(false);
+                        dto.setToggle(holder.addToggle.isChecked());
+                        holder.addInfoTV.setBackgroundColor(getResources().getColor(R.color.white));
+                        //notifyDataSetChanged();
+                    } else{
+                        //Toast.makeText(getApplicationContext(), "3"+holder.addToggle.isChecked(), Toast.LENGTH_SHORT).show();
+                        //holder.addToggle.setChecked(true);
+                        dto.setToggle(holder.addToggle.isChecked());
+                        holder.addInfoTV.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                        //notifyDataSetChanged();
+                    }
+                }
+            });
+
             return convertView;
         }
 
+        class CustomViewHolder {
+            TextView addInfoTV;
+            Button addPriority;
+            ToggleButton addToggle;
+        }
 
         public void addItem(CustomDTO dto) {
             listCustom.add(dto);

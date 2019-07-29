@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     ListView playlistView;
     Button addBtn, resetBtn;
+    TextView totalTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +37,14 @@ public class MainActivity extends AppCompatActivity {
         playlistView = findViewById(R.id.playlist);
         addBtn = findViewById(R.id.addBtn);
         resetBtn = findViewById(R.id.resetBtn);
+        totalTime = findViewById(R.id.totalTime);
 
         dbHelper = new playlist_DBHelper(this, dbName, null, dbVersion);
         dbAdapter = new playlist_DBAdapter(this, cursor);
         playlistView.setAdapter(dbAdapter);
 
         selectDB();
+        calTime();
 
         Intent intent = getIntent();
         if(intent.getStringExtra("first") != null){
@@ -76,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
             String length = cursor.getString(cursor.getColumnIndex("sLength"));
             String singer = cursor.getString(cursor.getColumnIndex("sSinger"));
             String album = cursor.getString(cursor.getColumnIndex("sAlbum"));
-            db.delete("playlistDB", "sName=? and sLength=? and sSinger=? and sAlbum=?", new String[]{name, length, singer, album});
+            String priority = cursor.getString(cursor.getColumnIndex("priority"));
+            db.delete("playlistDB", "sName=? and sLength=? and sSinger=? and sAlbum=?", new String[]{name, length, singer, album, priority});
             cursor.moveToNext();
         }
     }
@@ -88,11 +93,27 @@ public class MainActivity extends AppCompatActivity {
         cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
         if(cursor.getCount() > 0){
-            Log.d("logg","cursor1  "+cursor.getColumnIndex("sName"));
-            Log.d("logg","cursor2  "+cursor.getString(cursor.getColumnIndex("sName")));
             startManagingCursor(cursor);
         }
         dbAdapter.changeCursor(cursor);
         dbAdapter.notifyDataSetChanged();
+    }
+
+    private void calTime(){
+        db = dbHelper.getReadableDatabase();
+        sql = "SELECT sLength FROM playlistDB;";
+
+        cursor = db.rawQuery(sql, null);
+        cursor.moveToFirst();
+        int totalH=0, totalM=0;
+        while(!cursor.isAfterLast()){
+            String time = cursor.getString(cursor.getColumnIndex("sLength"));
+            totalH += Integer.parseInt(time.substring(0,time.indexOf(":")));
+            totalM += Integer.parseInt(time.substring(time.indexOf(":")+1));
+            cursor.moveToNext();
+        }
+        totalH += totalM/60;
+        totalM = totalM%60;
+        totalTime.setText(totalH+":"+totalM);
     }
 }

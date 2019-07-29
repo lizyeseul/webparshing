@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_below="@+id/linearSearch"
-            android:text="러브샷"/>
+            android:text="city lights"/>
     </LinearLayout>
 
     <ListView
