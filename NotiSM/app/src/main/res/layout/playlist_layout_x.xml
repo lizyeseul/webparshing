@@ -5,27 +5,39 @@
     android:layout_height="match_parent"
     android:padding="2dp"
     android:background="@color/colorAccent">
-    <TextView
-        android:background="@color/white"
-        android:layout_weight="3"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:id="@+id/title_Singer"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:id="@+id/sNameTV"
-        android:text="name"/>
+        android:layout_weight="3"
+        android:orientation="vertical">
+
+        <TextView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/sNameTV"
+            android:gravity="center_vertical"
+            android:text="name"/>
+
+        <TextView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:id="@+id/sSingerTV"
+            android:gravity="center_vertical"
+            android:text="singer"/>
+
+    </LinearLayout>
     <TextView
         android:background="@color/white"
         android:layout_weight="1"
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:id="@+id/sLengthTV"
+        android:gravity="center"
         android:text="length"/>
-    <TextView
-        android:background="@color/white"
-        android:layout_weight="2"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sSingerTV"
-        android:text="singer"/>
+    <!--
     <TextView
         android:background="@color/white"
         android:layout_weight="1"
@@ -33,5 +45,14 @@
         android:layout_height="wrap_content"
         android:id="@+id/sPri"
         android:text="priority"/>
+        -->
+    <TextView
+        android:background="@color/white"
+        android:layout_weight="1"
+        android:layout_width="30dp"
+        android:layout_height="60dp"
+        android:id="@+id/sTimes"
+        android:gravity="center"
+        android:text="times"/>
 
 </LinearLayout>

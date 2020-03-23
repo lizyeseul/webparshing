@@ -40,11 +40,50 @@
             android:gravity="center"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/title_mainlist"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_below="@+id/linearMainTime"
+        android:padding="2dp"
+        android:background="@color/colorAccent">
+        <TextView
+            android:background="@color/white"
+            android:layout_weight="3"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="name / singer"/>
+        <TextView
+            android:background="@color/white"
+            android:layout_weight="1"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="length"/>
+        <!--
+        <TextView
+            android:background="@color/white"
+            android:layout_weight="1"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:text="priority"/>
+            -->
+        <TextView
+            android:background="@color/white"
+            android:layout_weight="1"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="times"/>
+
+    </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/playlist"
         android:background="@color/colorAccent"
-        android:layout_below="@+id/linearMainTime"/>
+        android:layout_below="@+id/title_mainlist"/>
 </RelativeLayout>

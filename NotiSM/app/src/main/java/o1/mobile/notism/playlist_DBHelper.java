@@ -12,8 +12,8 @@ public class playlist_DBHelper extends SQLiteOpenHelper {
     }
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //sName , sLength  , sSinger, sAlbum, priority
-        sql = "CREATE TABLE playlistDB (_id INTEGER PRIMARY KEY AUTOINCREMENT," + " sName TEXT, sLength TEXT, sSinger TEXT, sAlbum TEXT, priority INTEGER);";
+        //sName , sLength  , sSinger, sAlbum, priority, sTimes
+        sql = "CREATE TABLE playlistDB (_id INTEGER PRIMARY KEY AUTOINCREMENT," + " sName TEXT, sLength TEXT, sSinger TEXT, sAlbum TEXT/*, priority INTEGER*/, sTimes INTEGER);";
         db.execSQL(sql);
     }
     @Override

@@ -63,27 +63,14 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
                 resetDB();
                 selectDB();
+                calTime();
             }
         });
     }
 
     private void resetDB(){
         db = dbHelper.getReadableDatabase();
-        sql = "SELECT * FROM playlistDB;";
-        cursor = db.rawQuery(sql, null);
-        //sName , sLength  , sSinger, sAlbum
-        cursor.moveToFirst();
-        for(int i=0; i<cursor.getCount(); i++){
-            Log.d("logg","name1 "+cursor.getColumnIndex("sName"));
-            Log.d("logg","name2 "+cursor.getString(cursor.getColumnIndex("sName")));
-            String name = cursor.getString(cursor.getColumnIndex("sName"));
-            String length = cursor.getString(cursor.getColumnIndex("sLength"));
-            String singer = cursor.getString(cursor.getColumnIndex("sSinger"));
-            String album = cursor.getString(cursor.getColumnIndex("sAlbum"));
-            String priority = cursor.getString(cursor.getColumnIndex("priority"));
-            db.delete("playlistDB", "sName=? and sLength=? and sSinger=? and sAlbum=?", new String[]{name, length, singer, album, priority});
-            cursor.moveToNext();
-        }
+        db.execSQL("delete from playlistDB");
     }
 
     private void selectDB(){
@@ -101,15 +88,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void calTime(){
         db = dbHelper.getReadableDatabase();
-        sql = "SELECT sLength FROM playlistDB;";
+        sql = "SELECT sLength, sTimes FROM playlistDB;";
 
         cursor = db.rawQuery(sql, null);
         cursor.moveToFirst();
         int totalH=0, totalM=0;
         while(!cursor.isAfterLast()){
             String time = cursor.getString(cursor.getColumnIndex("sLength"));
-            totalH += Integer.parseInt(time.substring(0,time.indexOf(":")));
-            totalM += Integer.parseInt(time.substring(time.indexOf(":")+1));
+            int times = cursor.getInt(cursor.getColumnIndex("sTimes"));
+            for(int i=0; i<times; i++){
+                totalH += Integer.parseInt(time.substring(0,time.indexOf(":")));
+                totalM += Integer.parseInt(time.substring(time.indexOf(":")+1));
+            }
             cursor.moveToNext();
         }
         totalH += totalM/60;

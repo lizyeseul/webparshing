@@ -16,6 +16,13 @@
             android:id="@+id/linearSearch"
             android:gravity="center">
             <Button
+                android:id="@+id/searchSingerBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가수 검색"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"/>
+            <Button
                 android:id="@+id/searchAlbumBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_below="@+id/linearSearch"
-            android:text="city lights"/>
+            android:text="city lights 백현"/>
     </LinearLayout>
 
     <ListView

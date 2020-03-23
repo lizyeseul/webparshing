@@ -114,7 +114,8 @@ public class albumInfo_j extends AppCompatActivity {
         for(int i=0; i<adapter.getCount(); i++){
             CustomDTO dtoTemp = (CustomDTO) adapter.getItem(i);
             //Toast.makeText(getApplicationContext(),"토글확인 "+dtoTemp.toggle,Toast.LENGTH_SHORT).show();
-            if(dtoTemp.toggle == true){
+            int times = dtoTemp.getTimes();
+            if(times > 0){
                 String temp = dtoTemp.getSonginfo();
 
                 String name = temp.substring(temp.indexOf("노래 : ")+5, temp.indexOf("길이 : ")-1);
@@ -124,12 +125,13 @@ public class albumInfo_j extends AppCompatActivity {
 
                 db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
-                //sName , sLength  , sSinger, sAlbum
+                //sName , sLength  , sSinger, sAlbum, sTimes
                 values.put("sName", name);
                 values.put("sLength", length);
                 values.put("sSinger", singer);
                 values.put("sAlbum", album);
-                values.put("priority", Integer.toString(dtoTemp.getPriority()));
+                values.put("sTimes", times);
+                //values.put("priority", Integer.toString(dtoTemp.getPriority()));
                 db.insert("playlistDB", null, values);
             }
 
@@ -141,8 +143,9 @@ public class albumInfo_j extends AppCompatActivity {
         for (int i = 0; i < songInformation.size(); i++) {
             CustomDTO dto = new CustomDTO();
             dto.setSonginfo(songInformation.get(i));
-            dto.setPriority(1);
-            dto.setToggle(true);
+            dto.setTimes(1);
+            //dto.setPriority(1);
+            //dto.setToggle(true);
 
             adapter.addItem(dto);
         }
@@ -150,28 +153,23 @@ public class albumInfo_j extends AppCompatActivity {
 
     public class CustomDTO{
         private String information;
-        private int priority;
-        private boolean toggle;
+        //private int priority;
+        private int times;
+        //private boolean toggle;
         public void setSonginfo(String songInfo){
             this.information = songInfo;
         }
         public String getSonginfo(){
             return information;
         }
-        public void setPriority(int priority){
-            this.priority = priority;
+        //public void setPriority(int priority){ this.priority = priority; }
+        //public int getPriority(){ return priority; }
+        public void setTimes(int times){
+            this.times = times;
         }
-        public int getPriority(){
-            return priority;
-        }
-        public void setToggle(boolean toggle){
-            this.toggle = toggle;
-        }
-        public boolean getToggle(){
-            return toggle;
-        }
-
-
+        public int getTimes() {return times;}
+        //public void setToggle(boolean toggle){ this.toggle = toggle; }
+        //public boolean getToggle(){ return toggle; }
     }
 
     public class add_Adapter_j extends BaseAdapter {
@@ -205,15 +203,45 @@ public class albumInfo_j extends AppCompatActivity {
             }
 
             holder.addInfoTV = (TextView) convertView.findViewById(R.id.addInfoTV);
-            holder.addPriority = (Button) convertView.findViewById(R.id.addPriority);
-            holder.addToggle = (ToggleButton) convertView.findViewById(R.id.addToggle);
+            //holder.addPriority = (Button) convertView.findViewById(R.id.addPriority);
+            //holder.addToggle = (ToggleButton) convertView.findViewById(R.id.addToggle);
+            holder.minusTimes = (Button) convertView.findViewById(R.id.minusTimes);
+            holder.addTimes = (TextView) convertView.findViewById(R.id.addTimes);
+            holder.plusTimes = (Button) convertView.findViewById(R.id.plusTimes);
 
             final CustomDTO dto = listCustom.get(position);
             holder.addInfoTV.setText(dto.getSonginfo());
-            holder.addPriority.setText(Integer.toString(dto.getPriority()));
-            holder.addToggle.setChecked(dto.getToggle());
+            //holder.addPriority.setText(Integer.toString(dto.getPriority()));
+            //holder.addToggle.setChecked(dto.getToggle());
+            holder.addTimes.setText(Integer.toString(dto.getTimes()));
+
+
+            //////////times 수 바꾸기
+            holder.minusTimes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int times = dto.getTimes();
+                    if(0<times && times<=30){
+                        times--;
+                    }
+                    dto.setTimes(times);
+                    notifyDataSetChanged();
+                }
+            });
+            holder.plusTimes.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int times = dto.getTimes();
+                    if(0<=times && times<30){
+                        times++;
+                    }
+                    dto.setTimes(times);
+                    notifyDataSetChanged();
+                }
+            });
 
             //////////priority 변경
+            /*
             holder.addPriority.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View v){
                     int pri = Integer.parseInt(holder.addPriority.getText().toString());
@@ -225,8 +253,11 @@ public class albumInfo_j extends AppCompatActivity {
                     notifyDataSetChanged();
                 }
             });
+            */
+
 
             ////////토글키 반영
+            /*
             holder.addToggle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -246,14 +277,18 @@ public class albumInfo_j extends AppCompatActivity {
                     }
                 }
             });
+            */
 
             return convertView;
         }
 
         class CustomViewHolder {
             TextView addInfoTV;
-            Button addPriority;
-            ToggleButton addToggle;
+            //Button addPriority;
+            Button minusTimes;
+            TextView addTimes;
+            Button plusTimes;
+            //ToggleButton addToggle;
         }
 
         public void addItem(CustomDTO dto) {

@@ -19,12 +19,14 @@ public class playlist_DBAdapter extends CursorAdapter {
         final TextView sNameTV = view.findViewById(R.id.sNameTV);
         final TextView sLengthTV = view.findViewById(R.id.sLengthTV);
         final TextView sSingerTV = view.findViewById(R.id.sSingerTV);
-        final TextView sPriorityTV = view.findViewById(R.id.sPri);
+        //final TextView sPriorityTV = view.findViewById(R.id.sPri);
+        final TextView sTimesTV = view.findViewById(R.id.sTimes);
 
         sNameTV.setText(cursor.getString(cursor.getColumnIndex("sName")));
         sLengthTV.setText(cursor.getString(cursor.getColumnIndex("sLength")));
         sSingerTV.setText(cursor.getString(cursor.getColumnIndex("sSinger")));
-        sPriorityTV.setText(cursor.getString(cursor.getColumnIndex("priority")));
+        //sPriorityTV.setText(cursor.getString(cursor.getColumnIndex("priority")));
+        sTimesTV.setText(cursor.getString(cursor.getColumnIndex("sTimes")));
     }
 
     @Override

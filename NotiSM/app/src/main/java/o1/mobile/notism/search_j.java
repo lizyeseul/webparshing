@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -25,7 +27,7 @@ import java.util.ArrayList;
 public class search_j extends AppCompatActivity {
 
     ListView searchListView;
-    Button searchAlbumBtn, searchSingBtn, searchCancelBtn;
+    Button searchSingerBtn, searchAlbumBtn, searchSingBtn, searchCancelBtn;
     EditText searchWord;
     ArrayAdapter adapter;
     ArrayList<String> items = new ArrayList<String>();
@@ -42,6 +44,7 @@ public class search_j extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_x);
 
+        searchSingerBtn = findViewById(R.id.searchSingerBtn);
         searchAlbumBtn = findViewById(R.id.searchAlbumBtn);
         searchSingBtn = findViewById(R.id.searchSingBtn);
         searchCancelBtn = findViewById(R.id.searchCancelBtn);
@@ -51,6 +54,15 @@ public class search_j extends AppCompatActivity {
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,items);
         searchListView.setAdapter(adapter);
 
+        searchAlbumBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                setUrl("singer");
+                SearchSingerAT searchThread = new SearchSingerAT();
+                searchThread.execute();
+                state = "singer";
+            }
+        });
         searchAlbumBtn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -76,6 +88,16 @@ public class search_j extends AppCompatActivity {
             }
         });
 
+        searchWord.setOnKeyListener(new View.OnKeyListener(){
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent event){
+                if(keyCode == KeyEvent.KEYCODE_ENTER){
+                    searchAlbumBtn.performClick();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,13 +121,71 @@ public class search_j extends AppCompatActivity {
                 }
                 i++;
             }
-            if(state.equals("album")){
+            if(state.equals("singer")){
+                url = "https://www.genie.co.kr/search/searchMain?query="+ word+"&Coll=";
+            } else if(state.equals("album")){
                 url = "https://www.genie.co.kr/search/searchAlbum?query="+ word+"&Coll=";
             } else if(state.equals("sing")){
                 url = "https://www.genie.co.kr/search/searchSong?query="+ word+"&Coll=";
             }
         } catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public class SearchSingerAT extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try{
+                Log.d("loggUrl","url: "+url);
+                doc = Jsoup.connect(url).get();
+                contents = doc.select(".ellipsis");
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
+            items.removeAll(items);
+
+            int count=0;
+            String albumName ="";
+            String albumNum ="";
+            numberList.removeAll(numberList);
+            for (Element element : contents) {
+                count++;
+                if(count%3 == 1){
+                    albumName = "앨범 : "+element.text()+ "\n";
+                    albumNum = element.getElementsByAttribute("onclick").toString();
+                    albumNum = albumNum.substring(albumNum.indexOf("Layer")+7, albumNum.indexOf("Layer")+8+7) ;
+
+                    numberList.add(Integer.parseInt(albumNum));
+                }
+                else if(count%3 == 2){
+                    albumName += "title : "+ element.text().substring(5)+ "\n";
+                }
+                else if(count%3 == 0){
+                    albumName += "가수 : "+ element.text();
+                    items.add(albumName);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            items.add("loading...");
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
         }
     }
 
