@@ -62,14 +62,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="length"/>
-        <!--
-        <TextView
-            android:background="@color/white"
-            android:layout_weight="1"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:text="priority"/>
-            -->
         <TextView
             android:background="@color/white"
             android:layout_weight="1"

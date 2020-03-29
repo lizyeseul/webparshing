@@ -5,4 +5,6 @@
     <color name="colorAccent">#E9BACA</color>
     <color name="editTextBackground">#F3D1DD</color>
     <color name="white">#FFFFFF</color>
+    <color name="clear">#00FFFFFF</color>
+    <color name="text">#111111</color>
 </resources>

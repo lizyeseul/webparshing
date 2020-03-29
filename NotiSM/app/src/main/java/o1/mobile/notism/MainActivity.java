@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     final static String dbName = "Playlist.db";
     final static int dbVersion = 1;
 
-    ListView playlistView;
+    static ListView playlistView;
     Button addBtn, resetBtn;
     TextView totalTime;
 

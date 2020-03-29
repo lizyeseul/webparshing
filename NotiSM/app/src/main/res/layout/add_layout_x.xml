@@ -25,16 +25,6 @@
         android:id="@+id/addTimes"
         android:layout_width="40dp"
         android:layout_height="match_parent" />
-    <!--
-    <Button
-        android:background="@color/editTextBackground"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:text="1"
-        android:id="@+id/addPriority"
-        android:layout_width="50dp"
-        android:layout_height="match_parent" />
-        -->
     <Button
         android:background="@color/editTextBackground"
         android:layout_gravity="center"
@@ -43,17 +33,5 @@
         android:id="@+id/plusTimes"
         android:layout_width="30dp"
         android:layout_height="match_parent" />
-    <!--
-    <ToggleButton
-        android:background="@color/editTextBackground"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:checked="true"
-        android:textOff="삭제됨"
-        android:textOn="선택됨"
-        android:id="@+id/addToggle"
-        android:layout_width="50dp"
-        android:layout_height="match_parent" />
-        -->
 
 </LinearLayout>

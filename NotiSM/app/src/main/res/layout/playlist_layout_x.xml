@@ -18,6 +18,7 @@
             android:layout_height="30dp"
             android:id="@+id/sNameTV"
             android:gravity="center_vertical"
+            android:textColor="@color/text"
             android:text="name"/>
 
         <TextView
@@ -26,6 +27,7 @@
             android:layout_height="30dp"
             android:id="@+id/sSingerTV"
             android:gravity="center_vertical"
+            android:textColor="@color/text"
             android:text="singer"/>
 
     </LinearLayout>
@@ -36,23 +38,46 @@
         android:layout_height="60dp"
         android:id="@+id/sLengthTV"
         android:gravity="center"
+        android:textColor="@color/text"
         android:text="length"/>
-    <!--
-    <TextView
-        android:background="@color/white"
-        android:layout_weight="1"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/sPri"
-        android:text="priority"/>
-        -->
-    <TextView
-        android:background="@color/white"
-        android:layout_weight="1"
+    <FrameLayout
         android:layout_width="30dp"
         android:layout_height="60dp"
-        android:id="@+id/sTimes"
-        android:gravity="center"
-        android:text="times"/>
+        android:layout_weight="1"
+        android:id="@+id/mainTimesF">
+        <TextView
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sTimes"
+            android:gravity="center"
+            android:textColor="@color/text"
+            android:text="sTimes"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainTimesL"
+            android:orientation="horizontal">
+            <Button
+                android:background="@color/clear"
+                android:layout_width="15dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/mainMinusTimes"
+                android:gravity="center"
+                android:textColor="@color/text"
+                android:text="-"/>
+            <Button
+                android:background="@color/clear"
+                android:layout_width="15dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:id="@+id/mainPlusTimes"
+                android:gravity="center"
+                android:textColor="@color/text"
+                android:text="+"/>
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>
