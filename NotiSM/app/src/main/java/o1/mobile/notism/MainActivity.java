@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     final static int dbVersion = 1;
 
     static ListView playlistView;
-    Button addBtn, resetBtn;
+    Button addBtn, resetBtn, refreshBtn;
     TextView totalTime;
 
     @Override
@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         playlistView = findViewById(R.id.playlist);
         addBtn = findViewById(R.id.addBtn);
         resetBtn = findViewById(R.id.resetBtn);
+        refreshBtn = findViewById(R.id.refreshBtn);
         totalTime = findViewById(R.id.totalTime);
 
         dbHelper = new playlist_DBHelper(this, dbName, null, dbVersion);
@@ -62,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 resetDB();
+                selectDB();
+                calTime();
+            }
+        });
+        refreshBtn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
                 selectDB();
                 calTime();
             }

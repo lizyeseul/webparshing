@@ -24,6 +24,13 @@
             android:text="모두 지우기"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"/>
+        <Button
+            android:id="@+id/refreshBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="새로고침"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
 
     </LinearLayout>
     <LinearLayout

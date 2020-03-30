@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_below="@+id/linearSearch"
-            android:text="city lights 백현"/>
+            android:text="수호 자화상"/>
     </LinearLayout>
 
     <ListView

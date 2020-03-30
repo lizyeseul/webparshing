@@ -48,16 +48,14 @@ public class playlist_DBAdapter extends CursorAdapter {
         minusTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int time = times;
+                int time = Integer.parseInt(sTimesTV.getText().toString());
                 if(time>0){
                     time--;
                 }
                 ContentValues values = new ContentValues();
                 values.put("sTimes", time);
-                db.update("playlistDB", values, "sName = ? and sSinger = ?",new String[] {name, singer});
-
                 sTimesTV.setText(Integer.toString(time));
-                notifyDataSetChanged();
+                db.update("playlistDB", values, "sName = ? and sSinger = ?",new String[] {name, singer});
             }
         });
 
@@ -65,15 +63,14 @@ public class playlist_DBAdapter extends CursorAdapter {
         plusTimes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int time = times;
+                int time = Integer.parseInt(sTimesTV.getText().toString());
                 if(time<30){
                     time++;
                 }
                 ContentValues values = new ContentValues();
                 values.put("sTimes", time);
-                db.update("playlistDB", values, "sName = ? and sSinger = ?",new String[] {name, singer});
                 sTimesTV.setText(Integer.toString(time));
-                notifyDataSetChanged();
+                db.update("playlistDB", values, "sName = ? and sSinger = ?",new String[] {name, singer});
             }
         });
     }

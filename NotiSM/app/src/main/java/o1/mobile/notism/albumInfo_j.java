@@ -119,7 +119,7 @@ public class albumInfo_j extends AppCompatActivity {
                 String singer = temp.substring(temp.indexOf("가수 : ")+5, temp.indexOf("길이 : ")-1);
                 String length = temp.substring(temp.indexOf("길이 : ")+5, temp.indexOf("앨범 : ")-1);
                 String album = temp.substring(temp.indexOf("앨범 : ")+5);
-
+/*
                 db = dbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
                 //sName , sLength  , sSinger, sAlbum, sTimes
@@ -129,6 +129,33 @@ public class albumInfo_j extends AppCompatActivity {
                 values.put("sAlbum", album);
                 values.put("sTimes", times);
                 db.insert("playlistDB", null, values);
+*/
+
+                db = dbHelper.getWritableDatabase();
+                //name, album으로 중복 체크
+                String sql = "SELECT * from playlistDB WHERE sName = '"+name+"' and sAlbum = '"+album+"';";
+                Cursor cursor = db.rawQuery(sql, null);
+                cursor.moveToFirst();
+                if(cursor.getCount() > 0){
+                    int timesOri = cursor.getInt(cursor.getColumnIndex("sTimes"))+times;
+                    ContentValues values = new ContentValues();
+                    //sName , sLength  , sSinger, sAlbum, sTimes
+                    values.put("sLength", length);
+                    values.put("sSinger", singer);
+                    values.put("sTimes", timesOri);
+                    db.update("playlistDB", values, "sName = ? and sAlbum = ?",new String[] {name, album});
+                }
+                else if(cursor.getCount() == 0){
+                    ContentValues values = new ContentValues();
+                    //sName , sLength  , sSinger, sAlbum, sTimes
+                    values.put("sName", name);
+                    values.put("sLength", length);
+                    values.put("sSinger", singer);
+                    values.put("sAlbum", album);
+                    values.put("sTimes", times);
+                    db.insert("playlistDB", null, values);
+                }
+
             }
 
         }
@@ -268,7 +295,14 @@ public class albumInfo_j extends AppCompatActivity {
                     songInfo += "길이 : "+ contentTrack.get(3).text() +"\n";
                     songInfo += "앨범 : "+ contentTrack.get(1).text();
 
+                    while(songInfo.contains("\'")){
+                        String str1 = songInfo.substring(0,songInfo.indexOf("\'"));
+                        String str2 = songInfo.substring(songInfo.indexOf("\'")+1);
+                        songInfo = str1+str2;
+                    }
                     songInformation.add(songInfo);
+
+                    return null;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -315,6 +349,11 @@ public class albumInfo_j extends AppCompatActivity {
             songInfo += "길이 : "+ contentTrack.get(3).text()+"\n";
             songInfo += "앨범 : "+ contentTrack.get(1).text();
 
+            while(songInfo.contains("\'")){
+                String str1 = songInfo.substring(0,songInfo.indexOf("\'"));
+                String str2 = songInfo.substring(songInfo.indexOf("\'")+1);
+                songInfo = str1+str2;
+            }
             songInformation.add(songInfo);
 
             return null;
